@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/pdfcpu/pdfcpu/pkg/api"
 	"github.com/pdfcpu/pdfcpu/pkg/pdfcpu"
@@ -37,8 +38,13 @@ func main() {
 	inputFile := args[0]
 	var outputFile string
 	if len(args) > 1 {
-		// 如果提供了输出文件路径，则使用它
+		// 如果提供了输出文件名或路径，则使用它
 		outputFile = args[1]
+		// 检查是否提供了完整路径
+		if !filepath.IsAbs(outputFile) && !strings.Contains(outputFile, string(os.PathSeparator)) {
+			// 如果只提供了文件名，则保存在当前目录
+			outputFile = filepath.Join(".", outputFile)
+		}
 	} else {
 		// 如果没有提供输出文件路径，则创建一个默认的输出文件夹
 		watermarkFolder := "watermarked_files"
